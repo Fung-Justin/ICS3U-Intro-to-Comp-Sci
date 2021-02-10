@@ -61,7 +61,7 @@ public class Day2Homework {
         
     
 
-        System.out.println( x1 + ", " + x2);
+        System.out.println( x1 + "," + x2);
 
     }
 }
