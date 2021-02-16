@@ -6,7 +6,7 @@ int number = 53273;
 
 int sum = getSumVersion2(number);
 
-int sum = getSum(number);
+//int sum = getSum(number);
 System.out.println(sum);
 
 
