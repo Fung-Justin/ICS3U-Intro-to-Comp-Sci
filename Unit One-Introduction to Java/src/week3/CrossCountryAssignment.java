@@ -3,9 +3,9 @@ package week3;
 import java.util.Scanner;
 
 public class CrossCountryAssignment {
-    static int runNum = 0; 
+    static int runNum = 0; //this variable keeps track of the number of the runners and will increase by 1 every time runnerData is called in the program
 
-    //this variable keeps track of the number of the runners and will increase by 1 every time runnerData is called in the program
+    
 	public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
@@ -13,15 +13,12 @@ public class CrossCountryAssignment {
         runnerData(in);
         runnerData(in);
         
-        
     }
-
-    
-    
+ 
     //converts the time which is in seconds(double), back into the normal time format, Min:sec.mili returns a String
     public static String getSplit( double m1){
         String split = (m1/60) + "";
-        // Divide the double by 60 to get the number of minutes, which will turn up to be a number with many decimals afterwards(eg. 5.32323412) 
+        /**Divide the double by 60 to get the number of minutes, which will turn up to be a number with many decimals afterwards(eg. 5.32323412) */  
         // turn it into a string so that it will be easier to seperate the digits before and after the decimal so that the proper operations can be performed
 
         int decimal = split.indexOf(".");
@@ -55,22 +52,19 @@ public class CrossCountryAssignment {
     // calls other functions like getsec and getSplit and displays all the information to the runner
     private static void runnerTime( String m1, String m2, String m3, String fName, String lName ) {
         double split1 = getSec(m1);
-         // uses method getSec to convert the string into seconds so that it can be added and subtracted to find the splits
+         // uses method getSec to convert the string into seconds so that it can be added and subtracted to find the splits, 
         double split2 =  getSec(m2)- split1 ;
-    
+        // to find the time of the second split, the time that it took to complete the second mile needs to be subtracted by the first split 
         double split3 = getSec(m3) - (split2 + split1);
+        // split three is calculated by taking the total time and subtracting all the other splits
 
         System.out.println("Summary of Runner "  + runNum + ": "+ fName +" " + lName);
 
-        System.out.println("Split one: " + getSplit(split1) + " min");
+        System.out.println("Split one: " + getSplit(split1) + " min"); // turns the splits in the form of a seconds (double), to the conventional way time is displayed(string) using getSplit
         System.out.println("Split two: " + getSplit(split2) + " min" );
         System.out.println("Split three: " + getSplit(split3) + " min");
         System.out.println ("Total Time: " + getSplit(split3 + split2 + split1) + " min\r\n");
         // prints back out a summary of the data
-     
-
-
-
     
 
     }
