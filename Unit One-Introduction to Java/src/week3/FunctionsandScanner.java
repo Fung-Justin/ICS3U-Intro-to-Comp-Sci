@@ -2,12 +2,18 @@ package week3;
 
 public class FunctionsandScanner {
 public static void main (String[] aStrings){
-int number = 53273;
+/*int number = 53273;
 
 int sum = getSumVersion2(number);
 
 //int sum = getSum(number);
 System.out.println(sum);
+
+*/
+
+String y = "Baseball";
+
+System.out.println(y.substring(11,18));
 
 
 

@@ -13,10 +13,13 @@ public class StringExamples {
     String s3 = "Steve"; // comparing strings that are declared like s3 and s4 WILL return as true
     String s4 = "Steve";
 
-    System.out.println(s1.equals(s2));
+    //System.out.println(s1.equals(s2));
+    double x = 10.0;
+    int y = 5;
 
+    System.out.println(x+y);
   }
-/*
+
   private static void exampleTwo() {
       String coursecode = "ICS3U AP";
     
@@ -31,5 +34,5 @@ public class StringExamples {
 
       System.out.println(simpletext);
   }
-  */
+  
 }
