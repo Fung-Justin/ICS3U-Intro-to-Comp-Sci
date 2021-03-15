@@ -1,7 +1,6 @@
 package week6;
 
 import java.util.Scanner;
-import java.util.concurrent.DelayQueue;
 
 public class ThreeCardPoker {
     private static final int DIAMOND = 1;
@@ -39,15 +38,13 @@ public class ThreeCardPoker {
 
             String playerHand = dealCards();
             String dealerHand = dealCards();
-
             System.out.println("\r\n Your Hand: " + playerHand);
 
             if (getPlay(in)) {
                 System.out.println("\r\nDealer's Hand: " + dealerHand);
 
-                System.out.println();
                 if (checkHand(dealerHand) == HIGHCARD && highCard(dealerHand) <= JACK) {
-                    System.out.println("dealer hand is worse than Jack-high, your play wager is returned");
+                    System.out.println("\r\ndealer hand is worse than Jack-high, your play wager is returned");
                     validhand = false;
                     BAL -= ANTE;
                     BAL += PLAY;
@@ -67,18 +64,31 @@ public class ThreeCardPoker {
     public static boolean isUnique(String playerHand, String card) {
         return playerHand.indexOf(card) == -1;
     }
-
-    public static void playA(Scanner in) {
+/**
+ *  Method to prompt player if they want to play again
+ * @param in Scanner to get response from player
+ * 
+ * 
+ */
+    private static void playA(Scanner in) {
         System.out.println("\r\nDo you want to play again? Y/N");
         String res = in.nextLine();
 
         if (res.substring(0, 1).equalsIgnoreCase("Y")) {
             playAgain = true;
-        } else if (res.substring(0, 1).equalsIgnoreCase("N")) {
+        } else 
             playAgain = false;
-        }
+        
     }
 
+    /**
+     * Method payout is used to payout the pair plus wager, ante wager, and play wager
+     * Boolean validHand is used to determine if the dealers hand follows rule A, and if valid hand is false, then the player will not get the payout
+     * of ante and play wager, and will only get payout for the pair plus wager
+     * the method adds the payout directly to the global variable BAL
+     * @param playerHand used with method checkHand to determined how large the pairplus wager payout is
+     * @param dealerHand used to determine the winner of the round by using compareHand method
+     */
     private static void payout(String playerHand, String dealerHand) {
         if (PAIRP >= 0) {
             if (checkHand(playerHand) >= PAIR) {
@@ -87,8 +97,7 @@ public class ThreeCardPoker {
                 System.out.println("\r\nPair plus wager: + $" + (PAIRP + (PAIRP * (checkHand(playerHand)))));
                 PAIRP = 0;
             } else {
-                System.out.println();
-                System.out.println("Unfortunately, you lost the pair plus wager");
+                System.out.println("\r\nUnfortunately, you lost the pair plus wager");
             }
         }
 
@@ -101,8 +110,16 @@ public class ThreeCardPoker {
             System.out.println("\r\nBalance: $" + BAL);
         }
     }
+    /**
+     * getAnte method is used to prompt the player for the ante wager
+     * to enforce a wager between 50 and 100 dollars and to remain efficient, 
+     * line 131 checks if the number is outside the range and forces a NumberFormatException
+     * by parsing "o" so that the code used to check if a number or letter is inputted can also be used
+     * to check for valid wagers. This strategy is used in other getWager methods
+     * @param in
+     */
 
-    private static void getAnte(Scanner in) {
+    public static void getAnte(Scanner in) {
         // ANTE WAGER
         System.out.println("Please enter your ante wager ($50-$100)");
         String ante = in.nextLine();
@@ -117,7 +134,6 @@ public class ThreeCardPoker {
                 }
                 validante = true;
             }
-
             catch (NumberFormatException ex) {
                 System.out.println("Please enter a wager between $50-$100");
                 ante = in.nextLine();
@@ -128,6 +144,13 @@ public class ThreeCardPoker {
         BAL -= ANTE;
     }
 
+    /**
+     * PlusP is used for prompting user for pair plus wager
+     * after the player is prompted for the option for a pair plus wager
+     * the first character of the response is checked for a y, ignoring the case of the character
+     * any other input is assumed as a no
+     * @param in scanner is used to check for yes or no response, and the value of their wager
+     */
     private static void getPlusP(Scanner in) {
 
         if (BAL >= 50) {
@@ -156,7 +179,11 @@ public class ThreeCardPoker {
             }
         }
     }
-
+/**
+ *  getBal assigns the value of the global variable BAL its value
+ * and checks for valid input
+ * @param in
+ */
     private static void getBal(Scanner in) {
         System.out.println("Hello, Please enter your balance, remember that you need to pay this back!");
         String balance = in.nextLine();
@@ -172,7 +199,13 @@ public class ThreeCardPoker {
         }
         BAL = Integer.parseInt(balance);
     }
-
+    /**
+     * getPlay determines if the player wants to play with their hand or fold and assigns the value of PLAY
+     * @param in like other methods it uses the scanner to check for y/n input from player
+     * @return returns a true if player wants to play and false if they want to fold
+     * the return of the method is used in the main while loop of the program to determine what happens
+     * 
+     */
     private static boolean getPlay(Scanner in) {
         System.out.println(
                 "Do you want to enter a play wager equal to your ante wager or fold? Enter Y to play, enter N to fold");
@@ -185,6 +218,15 @@ public class ThreeCardPoker {
         }
         return false;
     }
+
+    /**
+     * pairValue that is used to determine the value of a pair 
+     * in the event that both dealer and player have a pair, the value of the pair can be determined
+     * @param hand takes the hand of either player of dealer to determine value
+     * @return returns the pair value in the form of its index in the string ORDER 
+     * ORDER is a string that has the order of the strengths of weakest to strongest, from 2 to ACE
+     * 
+     */
 
     private static int pairValue(String hand) {
         int space = hand.indexOf(" ");
@@ -200,7 +242,17 @@ public class ThreeCardPoker {
     }
 
     // COMPARING PAIRS = HIGHCARD
-    private static int compareHand(String phand, String dhand) { // 1 == player wins, 2 == dealer wins, 0 == push
+    /**
+     * The compareHand method is used for comparing dealer and player hands with each other using other methods
+     * if both hands have the same value, eg. straight vs straight, the hand with the highest card is determined
+     * in the special case where both hands have a pair, then the method pairValue is called to compare the strength of 
+     * each hands pair
+     * the method also checks if both hands are equal, which will result in a push
+     * @param phand
+     * @param dhand
+     * @return returns and integer that indicates the winner,  1 == player wins, 2 == dealer wins, 0 == push
+     */
+    private static int compareHand(String phand, String dhand) { 
         if (checkHand(phand) == checkHand(dhand) && highCard(phand) == highCard(dhand))
             return 0;
         else if (checkHand(phand) == PAIR && checkHand(dhand) == PAIR && pairValue(phand) > pairValue(dhand))
@@ -215,18 +267,25 @@ public class ThreeCardPoker {
             return 2;
     }
 
+    // this method is just used for printing out the winning message depending on who is the winner
     private static String winner(String playerHand, String dealerHand) {
         if (compareHand(playerHand, dealerHand) == 1) {
-            System.out.println();
-            return "Player Wins";
+            
+            return "\r\nPlayer Wins";
         } else if (compareHand(playerHand, dealerHand) == 2) {
-            System.out.println();
-            return "Dealer Wins";
+            return "\r\nDealer Wins";
         }
-        System.out.println();
-        return "Push, no winners";
+        return "\r\nPush, no winners";
     }
-
+    /**
+     * the checkHand method is used for both determining the payout of 
+     * the pairplus wager and also used for comparing hands against each other
+     * this is because hands that are stronger also have a higher payout, so the 
+     * payout value can be used to compare the strength of a hand vs another, this is
+     * used in the compareHand method
+     * @param hand takes a hand and checks for special combinations using other methods
+     * @return an integer that reflects the hands payout value
+     */
     private static int checkHand(String hand) {
 
         if (isStraightFlush(hand)) {
@@ -242,6 +301,15 @@ public class ThreeCardPoker {
         } else
             return HIGHCARD;
     }
+    /**
+     * highCard is used to determine the what is the highest value single card in a hand
+     * to seperate the String hand, into 3 seperate cards, the method finds the index of 
+     * spaces which seperate each card, the card are then assinged a string and the suit is taken away,
+     * leaving only the first character. to find the high card, the string ORDER is used and Math.max
+     * determines which card has the highest index, which is the highest value card
+     * @param hand
+     * @return the method then returns its index in the string Order
+     */
 
     private static int highCard(String hand) {
         int space = hand.indexOf(" ");
@@ -260,7 +328,11 @@ public class ThreeCardPoker {
         }
         return order.indexOf(card3);
     }
-
+     /**
+      * dealCards deals 3 cards using a forloop using previous methods by calling getCard
+      * the method also calls, isUnique to make sure a card is not repeated 
+      * @return the hand of cards
+      */
     private static String dealCards() {
         String cards = "";
 
@@ -276,14 +348,20 @@ public class ThreeCardPoker {
         }
         return cards;
     }
-
+// checks for a straightflush by determining if both isFlush and isStraight is true
+// returns a boolean
     private static boolean isStraightFlush(String hand) {
         if (isFlush(hand) && isStraight(hand)) {
             return true;
         }
         return false;
     }
-
+    /**
+     * checks for a flush by taking only the suit of each card 
+     * checks for flush by checking if all the suits of card 1 2 and 3 are equal
+     * @param hand
+     * @return true or false boolean if it is a flush or not
+     */
     private static boolean isFlush(String hand) {
         int space = hand.indexOf(" ");
         int space2 = hand.indexOf(" ", space + 1);
@@ -297,7 +375,12 @@ public class ThreeCardPoker {
         }
         return false;
     }
-
+    /**
+     * similar to highCard, isPair takes only the face of the card,
+     * if 2 faces are equal, then it is a pair
+     * @param hand
+     * @return true or false boolean whether a hand is a pair or not
+     */
     private static boolean isPair(String hand) {
         int space = hand.indexOf(" ");
         int space2 = hand.indexOf(" ", space + 1);
@@ -312,7 +395,17 @@ public class ThreeCardPoker {
         }
         return false;
     }
-
+/**
+ * isStraight is used to determine if a hand has a straght
+ * similar to other methods that check hands for combination, it seperates the cards into its own strings
+ * using spaces. To check for a straight, the highest card, the lowest card and the middle card need to be determined
+ * this is done using the getMax, getMin, and getMiddle methods which take the index of each card in the string ORDER
+ * then, if the index of the max card -1 is equal to the middle card, and the index of middle card -1 is = to the smallest card
+ * then it is a straight
+ * A special case is ACE,2,3 and this straights needs to be specifically checked
+ * @param hand
+ * @return a boolean true or false 
+ */
     // ACE + 2 + 3 EXCEPTION
     private static boolean isStraight(String hand) {
         int space = hand.indexOf(" ");
@@ -320,7 +413,6 @@ public class ThreeCardPoker {
         String card1 = hand.substring(0, space - 1);
         String card2 = hand.substring(space + 1, space2 - 1);
         String card3 = hand.substring(space2 + 1, hand.length() - 2);
-        String order = "2345678910JQKA";
 
         int getMax = Math.max(order.indexOf(card1), Math.max(order.indexOf(card2), order.indexOf(card3)));
         int getMin = Math.min(order.indexOf(card1), Math.min(order.indexOf(card2), order.indexOf(card3)));
@@ -332,7 +424,7 @@ public class ThreeCardPoker {
 
         return false;
     }
-
+    // method is similar to pair except it checks if all three cards are equal
     private static boolean IsThreeOfKind(String hand) {
         int space = hand.indexOf(" ");
         int space2 = hand.indexOf(" ", space + 1);
@@ -345,7 +437,11 @@ public class ThreeCardPoker {
 
         return false;
     }
-
+    /**
+     * finds a random number between 13 and 2
+     * assigns every number above 10 with its respective face
+     * @return
+     */
     private static String getFace() {
         int face = (int) (Math.random() * 13 + 2);
 
@@ -362,7 +458,7 @@ public class ThreeCardPoker {
         }
         return null;
     }
-
+    // randomizes a number from 1 -4 and assigns the number its respective suit
     private static String getSuit() {
         int random = (int)(Math.random() * 4) +1;
         if (random == DIAMOND)
@@ -375,7 +471,7 @@ public class ThreeCardPoker {
             return "S";
         return null;
     }
-
+    //creates a card using previous methods getsuit and getcard
     private static String getCard() {
         return getFace() + getSuit();
     }
